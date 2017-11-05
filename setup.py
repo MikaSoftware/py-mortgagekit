@@ -32,7 +32,7 @@ setup(
     author_email='bart@mikasoftware.com',
     url='https://github.com/MikaSoftware/py-mortgagekit',
     license='BSD 2-Clause License',
-    python_requires='>=3.6',
+    python_requires='',
     packages=['mortgagekit'],
     install_requires=[
         'py-moneyed',
