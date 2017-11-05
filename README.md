@@ -1,6 +1,7 @@
 # py-mortgagekit
 ## Build Status
 [![Build Status](https://travis-ci.org/MikaSoftware/py-mortgagekit.svg?branch=master)](https://travis-ci.org/MikaSoftware/py-mortgagekit)
+[![PyPI version fury.io](https://badge.fury.io/py/py-mortgagekit.svg)](https://pypi.python.org/pypi/py-mortgagekit)
 [![Coverage Status](https://coveralls.io/repos/github/MikaSoftware/py-mortgagekit/badge.svg?branch=master)](https://coveralls.io/github/MikaSoftware/py-mortgagekit?branch=master)
 
 ## Description
@@ -11,28 +12,8 @@ Python library for mortgage calculations.
 * Python 3.6++
 
 ### Instructions
-1. Clone the project.
-
   ```bash
-  git clone https://github.com/mikasoftware/py-mortgagekit.git
-  ```
-
-2. Setup our virtual environment
-
-  ```bash
-  virtualenv -p python3.6 env
-  ```
-
-3. Activate virtual environment
-
-  ```bash
-  source env/bin/activate
-  ```
-
-4. Install the dependencies for this project.
-
-  ```bash
-  pip install -r requirements.txt
+  pip instll py-mortgagekit
   ```
 
 ## Usage
@@ -41,7 +22,6 @@ Here is an example of using the using the library in your code.
 
   ```python
   from mortgagekit.calculator import *
-  from mortgagekit.utils import *
 
   # Define our variables.
   total_amount = 250000
@@ -71,7 +51,7 @@ If you want to run the unit tests, you can run the following.
 Here is how you run the unit tests.
 
 ```bash
-python test_mortgagekit.py
+python setup.py test
 ```
 
 #### Code Coverage
@@ -79,8 +59,8 @@ Here is how you run code coverage. The first command runs the code coverage
 and the second command provides a report. If you would like to know more about ``coverage`` then click to [here to read](http://coverage.readthedocs.io/en/latest/).
 
 ```bash
-coverage run test_mortgagekit.py
-coverage report -m mortgagekit.py
+coverage run --source=mortgagekit setup.py test
+coverage report -m
 ```
 
 ## License

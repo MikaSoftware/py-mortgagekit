@@ -147,6 +147,7 @@ env/*
 env
 .env
 *.cfg
+dist
 
 #—————————————————————————————
 # Application Specific Ignores

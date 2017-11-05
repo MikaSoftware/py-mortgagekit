@@ -19,15 +19,15 @@ setup(
     description='Python library for mortgage calculations.',
     long_description=readme(),
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Education',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.6',
         'Topic :: Office/Business :: Financial :: Accounting',
       ],
-    keywords='mortgage real estate financial business bank',
-    version='1.0.0',
+    keywords='mortgage amortization finance',
+    version='1.0.0a1',
     author='Bartlomiej Mika',
     author_email='bart@mikasoftware.com',
     url='https://github.com/MikaSoftware/py-mortgagekit',
@@ -39,5 +39,5 @@ setup(
         'python-dateutil',
     ],
     test_suite='nose.collector',
-    tests_require=['nose'],
+    tests_require=['nose']
 )
