@@ -5,7 +5,11 @@
 ## Description
 Python library for mortgage calculations.
 
-## Build Instructions
+## Installation
+### Requirements
+* Python 3.6++
+
+### Instructions
 1. Clone the project.
 
   ```bash
