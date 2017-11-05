@@ -32,6 +32,11 @@ Here is an example of using the using the library in your code.
   compounding_period = MORTGAGEKIT_SEMI_ANNUAL
   first_payment_date = '2008-01-01'
 
+  # Feel free to use an alternate currency type by first checking to see if your
+  # your currency is supported here:
+  # https://github.com/limist/py-moneyed/blob/master/moneyed/localization.py#L348
+  currency='USD'
+
   # Load up our calculator.
   calc = MortgageCalculator(total_amount, down_payment, amortization_year,
                annual_interest_rate, payment_frequency, compounding_period,
