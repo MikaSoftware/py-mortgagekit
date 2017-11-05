@@ -1,9 +1,9 @@
 # py-mortgagekit
-## Description
-API library for mortgage calculations.
+## Build Status
+[![Build Status](https://travis-ci.org/MikaSoftware/py-mortgagekit.svg?branch=master)](https://travis-ci.org/MikaSoftware/py-mortgagekit)
 
-## Minimum Requirements
-* Python 3.6
+## Description
+Python library for mortgage calculations.
 
 ## Build Instructions
 1. Clone the project.
