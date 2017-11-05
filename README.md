@@ -1,4 +1,4 @@
-# mortgagekit-py
+# py-mortgagekit
 ## Description
 API library for mortgage calculations.
 
@@ -9,7 +9,7 @@ API library for mortgage calculations.
 1. Clone the project.
 
   ```bash
-  git clone https://github.com/mikasoftware/mortgagekit-py.git
+  git clone https://github.com/mikasoftware/py-mortgagekit.git
   ```
 
 2. Setup our virtual environment

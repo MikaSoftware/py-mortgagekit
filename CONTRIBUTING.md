@@ -60,6 +60,6 @@ Please follow the coding style conventions detailed below:
 {guidelines}
 
 [1]: mailto:{bart@mikasoftware.com}
-[2]: https://github.com/mikasoftware/mortgagekit-py/issues/new
-[3]: https://github.com/mikasoftware/mortgagekit-py/compare
-[4]: https://github.com/mikasoftware/mortgagekit-py/pulls
+[2]: https://github.com/mikasoftware/py-mortgagekit/issues/new
+[3]: https://github.com/mikasoftware/py-mortgagekit/compare
+[4]: https://github.com/mikasoftware/py-mortgagekit/pulls
