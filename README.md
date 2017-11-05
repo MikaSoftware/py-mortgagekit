@@ -1,6 +1,7 @@
 # py-mortgagekit
 ## Build Status
 [![Build Status](https://travis-ci.org/MikaSoftware/py-mortgagekit.svg?branch=master)](https://travis-ci.org/MikaSoftware/py-mortgagekit)
+[![Coverage Status](https://coveralls.io/repos/github/MikaSoftware/py-mortgagekit/badge.svg?branch=master)](https://coveralls.io/github/MikaSoftware/py-mortgagekit?branch=master)
 
 ## Description
 Python library for mortgage calculations.
