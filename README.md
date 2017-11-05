@@ -40,7 +40,7 @@ Here is an example of using the using the library in your code.
   # Load up our calculator.
   calc = MortgageCalculator(total_amount, down_payment, amortization_year,
                annual_interest_rate, payment_frequency, compounding_period,
-               first_payment_date)
+               first_payment_date, currency)
 
   # Perform computations.
   payment_schedule = calc.mortgage_payment_schedule()
