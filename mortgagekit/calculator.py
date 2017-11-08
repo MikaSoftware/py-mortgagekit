@@ -84,7 +84,7 @@ class MortgageCalculator(object):
 
         # Calculate our loan princinple.
         loanAmount = loanPurchaseAmount - downPayment
-        amountFinancedPercent = loanAmount / loanPurchaseAmount
+        amountFinancedPercent = loanAmount.amount / loanPurchaseAmount.amount
         return amountFinancedPercent * 100
 
     def interest_rate_per_payment_frequency(self):
