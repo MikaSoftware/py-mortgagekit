@@ -8,7 +8,7 @@ from __future__ import print_function
 import sys
 import argparse
 from datetime import datetime, timedelta
-import decimal
+from decimal import Decimal
 import math
 from dateutil.relativedelta import relativedelta
 from moneyed import Money, USD
@@ -25,13 +25,13 @@ __email = "bart@mikasoftware.com"
 __status__ = "Production"
 
 
-MORTGAGEKIT_ANNUAL = 1
-MORTGAGEKIT_SEMI_ANNUAL = 2
-MORTGAGEKIT_QUARTER = 4
-MORTGAGEKIT_BI_MONTH = 6
-MORTGAGEKIT_MONTH = 12
-MORTGAGEKIT_BI_WEEK = 26
-MORTGAGEKIT_WEEK = 52
+MORTGAGEKIT_ANNUAL = Decimal(1)
+MORTGAGEKIT_SEMI_ANNUAL = Decimal(2)
+MORTGAGEKIT_QUARTER = Decimal(4)
+MORTGAGEKIT_BI_MONTH = Decimal(6)
+MORTGAGEKIT_MONTH = Decimal(12)
+MORTGAGEKIT_BI_WEEK = Decimal(26)
+MORTGAGEKIT_WEEK = Decimal(52)
 
 
 class MortgageCalculator(object):
@@ -41,15 +41,36 @@ class MortgageCalculator(object):
     def __init__(self, total_amount, down_payment_amount, amortization_year,
                  annual_interest_rate, payment_frequency, compounding_period,
                  first_payment_date, currency='USD'):
+
+        # Perform assertions to ensure input is standardized by programmers
+        # who use this library.
+        assert isinstance(total_amount, Money), 'total_amount is not a Money class: %r' % total_amount
+        assert isinstance(down_payment_amount, Money), 'down_payment_amount is not a Money class: %r' % down_payment_amount
+        assert isinstance(amortization_year, int), 'amortization_year is not a Integer class: %r' % amortization_year
+        assert isinstance(annual_interest_rate, Decimal), 'annual_interest_rate is not a Decimal class: %r' % annual_interest_rate
+        assert isinstance(payment_frequency, Decimal), 'payment_frequency is not a Decimal class: %r' % payment_frequency
+        assert isinstance(compounding_period, Decimal), 'compounding_period is not a Money class: %r' % compounding_period
+
+        # Convert the date input into python "Date" object.
+        first_payment_date_obj = None
+        if not isinstance(first_payment_date, datetime):
+            if not isinstance(first_payment_date, str):
+                raise("first_payment_date is not String nor Datetime object.")
+            else:
+                first_payment_date_obj = datetime.strptime(first_payment_date, "%Y-%m-%d").date()
+        else:
+            first_payment_date_obj = first_payment_date
+
+        # Save to class member variables.
         self._currency = currency
-        self._total_amount = Money(amount=total_amount, currency=currency)
-        self._down_payment_amount = Money(amount=down_payment_amount, currency=currency)
+        self._total_amount = total_amount
+        self._down_payment_amount = down_payment_amount
         self._loan_amount = self._total_amount - self._down_payment_amount
-        self._amortization_year = int(amortization_year)
-        self._annual_interest_rate = decimal.Decimal(annual_interest_rate)
-        self._payment_frequency = int(payment_frequency)
-        self._compounding_period = int(compounding_period)
-        self._first_payment_date = datetime.strptime(first_payment_date, "%Y-%m-%d").date()
+        self._amortization_year = amortization_year
+        self._annual_interest_rate = annual_interest_rate
+        self._payment_frequency = payment_frequency
+        self._compounding_period = compounding_period
+        self._first_payment_date = first_payment_date_obj
 
     def get_payment_frequency(self):
         return self._payment_frequency
@@ -122,7 +143,7 @@ class MortgageCalculator(object):
         # Initialize the payment schedule which will include all necessary data.
         paymentSchedule = []
         mortgagePayment = self.mortgage_payment_per_payment_frequency()
-        interestRatePerPayment = decimal.Decimal(self.interest_rate_per_payment_frequency())
+        interestRatePerPayment = Decimal(self.interest_rate_per_payment_frequency())
         loanBalance = self._loan_amount
         totalPaidToInterest = Money(amount=0, currency=self._currency)
         totalPaidToBank = Money(amount=0, currency=self._currency)
@@ -132,7 +153,7 @@ class MortgageCalculator(object):
         for amortizationYear in range(1, self._amortization_year+1):
 
             # Go through all the payments in that year.
-            for payment in range(1, self._payment_frequency+1):
+            for payment in range(1, int(self._payment_frequency)+1):
 
                 # Calculate amount going to pay off interest.
                 interestAmount = loanBalance * interestRatePerPayment
@@ -187,25 +208,25 @@ class MortgageCalculator(object):
         monthly_mortgage_payment = None
 
         if frequency == MORTGAGEKIT_ANNUAL:  # Annual
-            monthly_mortgage_payment = mortgage_payment / decimal.Decimal(MORTGAGEKIT_MONTH)
+            monthly_mortgage_payment = mortgage_payment / Decimal(MORTGAGEKIT_MONTH)
 
         elif frequency == MORTGAGEKIT_SEMI_ANNUAL:  # Semi-annual
-            monthly_mortgage_payment = mortgage_payment / decimal.Decimal(MORTGAGEKIT_BI_MONTH)
+            monthly_mortgage_payment = mortgage_payment / Decimal(MORTGAGEKIT_BI_MONTH)
 
         elif frequency == MORTGAGEKIT_QUARTER:  # Quarterly
-            monthly_mortgage_payment = mortgage_payment / decimal.Decimal(MORTGAGEKIT_QUARTER)
+            monthly_mortgage_payment = mortgage_payment / Decimal(MORTGAGEKIT_QUARTER)
 
         elif frequency == MORTGAGEKIT_BI_MONTH:
-            monthly_mortgage_payment = mortgage_payment / decimal.Decimal(MORTGAGEKIT_SEMI_ANNUAL)
+            monthly_mortgage_payment = mortgage_payment / Decimal(MORTGAGEKIT_SEMI_ANNUAL)
 
         if frequency == MORTGAGEKIT_MONTH:
             monthly_mortgage_payment = mortgage_payment
 
         elif frequency == MORTGAGEKIT_BI_WEEK:
-            monthly_mortgage_payment = mortgage_payment * decimal.Decimal(MORTGAGEKIT_BI_WEEK) / decimal.Decimal(MORTGAGEKIT_MONTH)
+            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_BI_WEEK) / Decimal(MORTGAGEKIT_MONTH)
 
         elif frequency == MORTGAGEKIT_WEEK:
-            monthly_mortgage_payment = mortgage_payment * decimal.Decimal(MORTGAGEKIT_WEEK) / decimal.Decimal(MORTGAGEKIT_MONTH)
+            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_WEEK) / Decimal(MORTGAGEKIT_MONTH)
 
         else:
             raise Exception("WARNING: Unsupported payment frequency type!")
@@ -225,67 +246,24 @@ class MortgageCalculator(object):
             monthly_mortgage_payment = mortgage_payment
 
         elif frequency == MORTGAGEKIT_SEMI_ANNUAL:
-            monthly_mortgage_payment = mortgage_payment * decimal.Decimal(MORTGAGEKIT_SEMI_ANNUAL)
+            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_SEMI_ANNUAL)
 
         elif frequency == MORTGAGEKIT_QUARTER:
-            monthly_mortgage_payment = mortgage_payment * decimal.Decimal(MORTGAGEKIT_QUARTER)
+            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_QUARTER)
 
         elif frequency == MORTGAGEKIT_BI_MONTH:
-            monthly_mortgage_payment = mortgage_payment * decimal.Decimal(MORTGAGEKIT_BI_MONTH)
+            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_BI_MONTH)
 
         if frequency == MORTGAGEKIT_MONTH:
-            monthly_mortgage_payment = mortgage_payment * decimal.Decimal(MORTGAGEKIT_MONTH)
+            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_MONTH)
 
         elif frequency == MORTGAGEKIT_BI_WEEK:
-            monthly_mortgage_payment = mortgage_payment * decimal.Decimal(MORTGAGEKIT_BI_WEEK)
+            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_BI_WEEK)
 
         elif frequency == MORTGAGEKIT_WEEK:
-            monthly_mortgage_payment = mortgage_payment * decimal.Decimal(MORTGAGEKIT_WEEK)
+            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_WEEK)
 
         else:
             raise Exception("WARNING: Unsupported payment frequency type!")
 
         return monthly_mortgage_payment
-
-
-def main():
-    """
-    @Precondition:
-        Parameters must be of the following.
-        - Loan Amount
-        - Loan Purchase Amount
-        - Down Payment
-        - Annual Interest Rate
-        - Amortization Years
-        - Payment Frequency
-        - Compounding Period
-        - First Payment Date
-
-    @Postcondition:
-        Will return perform the compuation and return the results dictonary.
-    """
-    parser = argparse.ArgumentParser(description='Mortgage Amortization Calculator')
-    parser.add_argument('-t', '--total', default=250000, dest='total_amount')
-    parser.add_argument('-dp', '--down-payment', default=50000, dest='down_payment_amount')
-    parser.add_argument('-y', '--years', default=25, dest='amortization_year')
-    parser.add_argument('-i', '--annual-interest-rate', default=0.04, dest='annual_interest_rate')
-    parser.add_argument('-f', '--payment-frequency', default=12, dest='payment_frequency')
-    parser.add_argument('-p', '--compounding-period', default=2, dest='compounding_period')
-    parser.add_argument('-date', '--first-payment-date', default="2008-01-01", dest='first_payment_date')
-    args = parser.parse_args()
-
-    calc = MortgageCalculator(
-        args.total_amount,
-        args.down_payment_amount,
-        args.amortization_year,
-        args.annual_interest_rate,
-        args.payment_frequency,
-        args.compounding_period,
-        args.first_payment_date
-    )
-
-    payment_schedule = calc.mortgage_payment_schedule()
-    print(payment_schedule)
-
-if __name__ == '__main__':
-    main()

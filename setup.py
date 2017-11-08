@@ -27,7 +27,7 @@ setup(
         'Topic :: Office/Business :: Financial :: Accounting',
       ],
     keywords='mortgage amortization finance',
-    version='1.0.0a1',
+    version='1.0.1a1',
     author='Bartlomiej Mika',
     author_email='bart@mikasoftware.com',
     url='https://github.com/MikaSoftware/py-mortgagekit',

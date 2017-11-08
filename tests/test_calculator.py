@@ -12,10 +12,10 @@ class TestMortgageCalculator(unittest.TestCase):
 
     def test_case_1(self):
         # Set our test data.
-        total_amount = 250000
-        down_payment = 50000
+        total_amount = Money(amount=250000.00, currency="USD")
+        down_payment = Money(amount=50000.00, currency="USD")
         amortization_year = 25
-        annual_interest_rate = 0.04
+        annual_interest_rate = Decimal(0.04)
         payment_frequency = MORTGAGEKIT_MONTH
         compounding_period = MORTGAGEKIT_SEMI_ANNUAL
         first_payment_date = '2008-01-01'
@@ -30,9 +30,15 @@ class TestMortgageCalculator(unittest.TestCase):
         #     - http://mortgagecalculatorcanada.com/en/calculators/mortgage-payment-calculator/
 
         # Load up our calculator.
-        calc = MortgageCalculator(total_amount, down_payment, amortization_year,
-                     annual_interest_rate, payment_frequency, compounding_period,
-                     first_payment_date)
+        calc = MortgageCalculator(
+            total_amount,
+            down_payment,
+            amortization_year,
+            annual_interest_rate,
+            payment_frequency,
+            compounding_period,
+            first_payment_date
+        )
 
         # Verify our calculator object was generated.
         self.assertIsNotNone(calc)

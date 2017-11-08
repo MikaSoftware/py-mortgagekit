@@ -24,11 +24,11 @@ Here is an example of using the using the library in your code.
   from mortgagekit.calculator import *
 
   # Define our variables.
-  total_amount = 250000
-  down_payment = 50000
+  total_amount = Money(amount=250000.00, currency="USD")
+  down_payment = Money(amount=50000.00, currency="USD")
   amortization_year = 25
-  annual_interest_rate = 0.04
-  payment_frequency = MORTGAGEKIT_MONTH # see mortgagekit.py for more options.
+  annual_interest_rate = Decimal(0.04)
+  payment_frequency = MORTGAGEKIT_MONTH # see calculator.py for more options.
   compounding_period = MORTGAGEKIT_SEMI_ANNUAL
   first_payment_date = '2008-01-01'
 
