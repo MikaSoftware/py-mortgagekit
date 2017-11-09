@@ -43,26 +43,26 @@ class TestMortgageCalculator(unittest.TestCase):
         # Verify our calculator object was generated.
         self.assertIsNotNone(calc)
 
-        # Verify "interest_rate_per_payment_frequency" function.
-        r = calc.interest_rate_per_payment_frequency()
+        # Verify "get_interest_rate_per_payment_frequency" function.
+        r = calc.get_interest_rate_per_payment_frequency()
         self.assertAlmostEqual(r, 0.0033, 4)
 
-        # Verify "total_number_of_payments_per_frequency" function.
-        n = calc.total_number_of_payments_per_frequency()
+        # Verify "get_total_number_of_payments_per_frequency" function.
+        n = calc.get_total_number_of_payments_per_frequency()
         self.assertEqual(n, 300)
 
-        # Verify "mortgage_payment_per_payment_frequency" function.
-        monthly_payment = calc.mortgage_payment_per_payment_frequency()
+        # Verify "get_mortgage_payment_per_payment_frequency" function.
+        monthly_payment = calc.get_mortgage_payment_per_payment_frequency()
         self.assertIsNotNone(monthly_payment)
         x = Money(amount=1052.04, currency='USD')
         self.assertAlmostEqual(monthly_payment.amount, x.amount, 2)
 
-        # Verify "percent_of_loan_financed" function.
-        percent = calc.percent_of_loan_financed()
+        # Verify "get_percent_of_loan_financed" function.
+        percent = calc.get_percent_of_loan_financed()
         self.assertEqual(percent, 80.00)
 
-        # Verify "mortgage_payment_schedule" function.
-        payment_schedule = calc.mortgage_payment_schedule()
+        # Verify "get_mortgage_payment_schedule" function.
+        payment_schedule = calc.get_mortgage_payment_schedule()
         self.assertIsNotNone(payment_schedule)
 
         # YEAR 1 | MONTH 1
@@ -89,11 +89,11 @@ class TestMortgageCalculator(unittest.TestCase):
         self.assertAlmostEqual(interval_25['loan_balance'].amount, Money(amount=0.0, currency='USD').amount, 2)
 
         # Monthly mortgage payment.
-        monthly_mortgage_payment = calc.monthly_mortgage_payment()
+        monthly_mortgage_payment = calc.get_monthly_mortgage_payment()
         self.assertAlmostEqual(monthly_mortgage_payment.amount,  x.amount, 2)
 
         # # Annual mortgage payment.
-        annual_mortgage_payment = calc.annual_mortgage_payment()
+        annual_mortgage_payment = calc.get_annual_mortgage_payment()
         expected = Money(amount=12624.48, currency='USD')
         self.assertAlmostEqual(annual_mortgage_payment.amount,  expected.amount, 2)
 

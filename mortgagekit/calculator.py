@@ -75,19 +75,19 @@ class MortgageCalculator(object):
     def get_payment_frequency(self):
         return self._payment_frequency
 
-    def percent_of_loan_financed(self):
+    def get_percent_of_loan_financed(self):
         loanPurchaseAmount = self._total_amount
         downPayment = self._down_payment_amount
 
         if loanPurchaseAmount is 0:  # Defensive Code: Prevent division by zero error.
-            return 0
+            return Decimal(0)
 
         # Calculate our loan princinple.
         loanAmount = loanPurchaseAmount - downPayment
         amountFinancedPercent = loanAmount.amount / loanPurchaseAmount.amount
-        return amountFinancedPercent * 100
+        return Decimal(amountFinancedPercent * 100)
 
-    def interest_rate_per_payment_frequency(self):
+    def get_interest_rate_per_payment_frequency(self):
         compoundingPeriod = self._compounding_period
         annualInterestRate = self._annual_interest_rate
         paymentFrequency = self._payment_frequency
@@ -101,21 +101,21 @@ class MortgageCalculator(object):
         z = z - 1.0;
         return z
 
-    def total_number_of_payments_per_frequency(self):
+    def get_total_number_of_payments_per_frequency(self):
         amortYear = self._amortization_year
         payment_frequency = self._payment_frequency
         totalPayments = amortYear * payment_frequency
         return totalPayments
 
-    def mortgage_payment_per_payment_frequency(self):
+    def get_mortgage_payment_per_payment_frequency(self):
         """
         Function will return the amount paid per payment based on the frequency.
         """
         # Calculate the interest rate per the payment parameters:
-        r = self.interest_rate_per_payment_frequency()
+        r = self.get_interest_rate_per_payment_frequency()
 
         # Calculate the total number of payments given the parameters:
-        n = self.total_number_of_payments_per_frequency()
+        n = self.get_total_number_of_payments_per_frequency()
 
         # Variables used as number holders.
         p = self._loan_amount
@@ -139,11 +139,11 @@ class MortgageCalculator(object):
 
         return mortgage
 
-    def mortgage_payment_schedule(self):
+    def get_mortgage_payment_schedule(self):
         # Initialize the payment schedule which will include all necessary data.
         paymentSchedule = []
-        mortgagePayment = self.mortgage_payment_per_payment_frequency()
-        interestRatePerPayment = Decimal(self.interest_rate_per_payment_frequency())
+        mortgagePayment = self.get_mortgage_payment_per_payment_frequency()
+        interestRatePerPayment = Decimal(self.get_interest_rate_per_payment_frequency())
         loanBalance = self._loan_amount
         totalPaidToInterest = Money(amount=0, currency=self._currency)
         totalPaidToBank = Money(amount=0, currency=self._currency)
@@ -198,12 +198,12 @@ class MortgageCalculator(object):
 
         return paymentSchedule
 
-    def monthly_mortgage_payment(self):
+    def get_monthly_mortgage_payment(self):
         """
         Function will return the amount paid per payment standardized to
         a per monthly bases.
         """
-        mortgage_payment = self.mortgage_payment_per_payment_frequency()
+        mortgage_payment = self.get_mortgage_payment_per_payment_frequency()
         frequency = self._payment_frequency
         monthly_mortgage_payment = None
 
@@ -233,12 +233,12 @@ class MortgageCalculator(object):
 
         return monthly_mortgage_payment
 
-    def annual_mortgage_payment(self):
+    def get_annual_mortgage_payment(self):
         """
         Function will return the amount paid per payment standardized to
         a per annual bases.
         """
-        mortgage_payment = self.mortgage_payment_per_payment_frequency()
+        mortgage_payment = self.get_mortgage_payment_per_payment_frequency()
         frequency = self._payment_frequency
         monthly_mortgage_payment = None
 
