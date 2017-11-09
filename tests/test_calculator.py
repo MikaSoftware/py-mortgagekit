@@ -10,6 +10,72 @@ from mortgagekit.calculator import *
 
 class TestMortgageCalculator(unittest.TestCase):
 
+    def setUp(self):
+        # DEVELOPER NOTES:
+        # - The above numbers will result in:
+        #     - Mortgage Amount: $200,000.00
+        #     - Property Value: $250,000.00
+        #     - Total Monthly Payment: $1,052.04
+        #     - Loan To Value Ratio: 80.00%
+        # - Verified by third party tool:
+        #     - http://mortgagecalculatorcanada.com/en/calculators/mortgage-payment-calculator/
+
+        self.calc = MortgageCalculator(
+            total_amount=Money(amount=250000.00, currency="USD"),
+            down_payment_amount=Money(amount=50000.00, currency="USD"),
+            amortization_year=25,
+            annual_interest_rate=Decimal(0.04),
+            payment_frequency=MORTGAGEKIT_MONTH,
+            compounding_period=MORTGAGEKIT_SEMI_ANNUAL,
+            first_payment_date='2008-01-01'
+        )
+
+    def test_init(self):
+        # Case 1
+        self.assertIsNotNone(self.calc)
+
+        # Case 2
+        try:
+            calc = MortgageCalculator(
+               total_amount=Money(amount=250000.00, currency="USD"),
+                down_payment_amount=Money(amount=50000.00, currency="USD"),
+                amortization_year=25,
+                annual_interest_rate=Decimal(0.04),
+                payment_frequency=MORTGAGEKIT_MONTH,
+                compounding_period=MORTGAGEKIT_SEMI_ANNUAL,
+                first_payment_date=1234
+            )
+        except Exception as e:
+            self.assertIsNotNone(e)
+
+        # Case 3
+        calc = MortgageCalculator(
+            total_amount=Money(amount=250000.00, currency="USD"),
+            down_payment_amount=Money(amount=50000.00, currency="USD"),
+            amortization_year=25,
+            annual_interest_rate=Decimal(0.04),
+            payment_frequency=MORTGAGEKIT_MONTH,
+            compounding_period=MORTGAGEKIT_SEMI_ANNUAL,
+            first_payment_date=datetime.now()
+        )
+
+    def test_get_payment_frequency(self):
+        payment_frequency = self.calc.get_payment_frequency()
+        self.assertIsNotNone(payment_frequency)
+        self.assertEqual(payment_frequency, MORTGAGEKIT_MONTH)
+
+    def test_get_percent_of_loan_financed(self):
+        # Test 1
+        percent_of_loan_financed = self.calc.get_percent_of_loan_financed()
+        self.assertIsNotNone(percent_of_loan_financed)
+        self.assertEqual(percent_of_loan_financed, Decimal(80.0))
+
+        # Test 2
+        self.calc._total_amount = 0
+        percent_of_loan_financed = self.calc.get_percent_of_loan_financed()
+        self.assertIsNotNone(percent_of_loan_financed)
+        self.assertEqual(percent_of_loan_financed, Decimal(0.0))
+
     def test_case_1(self):
         # Set our test data.
         total_amount = Money(amount=250000.00, currency="USD")
@@ -19,15 +85,6 @@ class TestMortgageCalculator(unittest.TestCase):
         payment_frequency = MORTGAGEKIT_MONTH
         compounding_period = MORTGAGEKIT_SEMI_ANNUAL
         first_payment_date = '2008-01-01'
-
-        # DEVELOPER NOTES:
-        # - The above numbers will result in:
-        #     - Mortgage Amount: $200,000.00
-        #     - Property Value: $250,000.00
-        #     - Total Monthly Payment: $1,052.04
-        #     - Loan To Value Ratio: 80.00%
-        # - Verified by third party tool:
-        #     - http://mortgagecalculatorcanada.com/en/calculators/mortgage-payment-calculator/
 
         # Load up our calculator.
         calc = MortgageCalculator(

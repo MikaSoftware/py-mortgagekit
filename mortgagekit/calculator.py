@@ -76,24 +76,24 @@ class MortgageCalculator(object):
         return self._payment_frequency
 
     def get_percent_of_loan_financed(self):
-        loanPurchaseAmount = self._total_amount
-        downPayment = self._down_payment_amount
+        loan_purchase_amount = self._total_amount
+        down_payment = self._down_payment_amount
 
-        if loanPurchaseAmount is 0:  # Defensive Code: Prevent division by zero error.
+        if loan_purchase_amount is 0:  # Defensive Code: Prevent division by zero error.
             return Decimal(0)
 
         # Calculate our loan princinple.
-        loanAmount = loanPurchaseAmount - downPayment
-        amountFinancedPercent = loanAmount.amount / loanPurchaseAmount.amount
+        loanAmount = loan_purchase_amount - down_payment
+        amountFinancedPercent = loanAmount.amount / loan_purchase_amount.amount
         return Decimal(amountFinancedPercent * 100)
 
     def get_interest_rate_per_payment_frequency(self):
-        compoundingPeriod = self._compounding_period
-        annualInterestRate = self._annual_interest_rate
-        paymentFrequency = self._payment_frequency
+        compounding_period = self._compounding_period
+        annual_interest_rate = self._annual_interest_rate
+        payment_frequency = self._payment_frequency
 
-        y = compoundingPeriod / paymentFrequency
-        x = annualInterestRate / compoundingPeriod
+        y = compounding_period / payment_frequency
+        x = annual_interest_rate / compounding_period
         x = x + 1
 
         #WARNING: Precision loss
@@ -102,10 +102,10 @@ class MortgageCalculator(object):
         return z
 
     def get_total_number_of_payments_per_frequency(self):
-        amortYear = self._amortization_year
+        amort_year = self._amortization_year
         payment_frequency = self._payment_frequency
-        totalPayments = amortYear * payment_frequency
-        return totalPayments
+        total_payments = amort_year * payment_frequency
+        return total_payments
 
     def get_mortgage_payment_per_payment_frequency(self):
         """
