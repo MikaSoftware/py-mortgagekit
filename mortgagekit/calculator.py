@@ -76,9 +76,9 @@ class MortgageCalculator(object):
             return Decimal(0)
 
         # Calculate our loan princinple.
-        loanAmount = loan_purchase_amount - down_payment
-        amountFinancedPercent = loanAmount.amount / loan_purchase_amount.amount
-        return Decimal(amountFinancedPercent * 100)
+        loan_amount = loan_purchase_amount - down_payment
+        amount_financed_percent = loan_amount.amount / loan_purchase_amount.amount
+        return Decimal(amount_financed_percent * 100)
 
     def get_interest_rate_per_payment_frequency(self):
         compounding_period = self._compounding_period
@@ -134,49 +134,49 @@ class MortgageCalculator(object):
 
     def get_mortgage_payment_schedule(self):
         # Initialize the payment schedule which will include all necessary data.
-        paymentSchedule = []
-        mortgagePayment = self.get_mortgage_payment_per_payment_frequency()
-        interestRatePerPayment = Decimal(self.get_interest_rate_per_payment_frequency())
-        loanBalance = self._loan_amount
-        totalPaidToInterest = Money(amount=0, currency=self._currency)
-        totalPaidToBank = Money(amount=0, currency=self._currency)
+        payment_schedule = []
+        mortgage_payment = self.get_mortgage_payment_per_payment_frequency()
+        interest_rate_per_payment = Decimal(self.get_interest_rate_per_payment_frequency())
+        loan_balance = self._loan_amount
+        total_paid_to_interest = Money(amount=0, currency=self._currency)
+        total_paid_to_bank = Money(amount=0, currency=self._currency)
         current_payment_date = self._first_payment_date
 
         # Go through all the years of the loan.
-        for amortizationYear in range(1, self._amortization_year+1):
+        for amortization_year in range(1, self._amortization_year+1):
 
             # Go through all the payments in that year.
             for payment in range(1, int(self._payment_frequency)+1):
 
                 # Calculate amount going to pay off interest.
-                interestAmount = loanBalance * interestRatePerPayment
+                interest_amount = loan_balance * interest_rate_per_payment
 
                 # Calculate amount going to pay off principle.
-                principleAmount = mortgagePayment - interestAmount
+                principle_amount = mortgage_payment - interest_amount
 
                 # Calculate the remaining loan balance.
-                loanBalance = loanBalance - principleAmount
-                totalPaidToInterest = interestAmount + totalPaidToInterest
-                totalPaidToBank = mortgagePayment + totalPaidToBank
+                loan_balance = loan_balance - principle_amount
+                total_paid_to_interest = interest_amount + total_paid_to_interest
+                total_paid_to_bank = mortgage_payment + total_paid_to_bank
 
                 # Calculate the next payment date according to the year/ month/ etc
                 # that the computation is currently on.
                 current_payment_date = get_next_date_by_frequency(current_payment_date, self._payment_frequency)
 
                 # Save the computation we've generated.
-                paymentSchedule.append({
-                    'year': amortizationYear,
+                payment_schedule.append({
+                    'year': amortization_year,
                     'interval': payment,
-                    'payment': mortgagePayment,
-                    'interest': interestAmount,
-                    'principle': principleAmount,
-                    'loan_balance': loanBalance,
-                    'totalPaidToInterest': totalPaidToInterest,
-                    'totalPaidToBank': totalPaidToBank,
+                    'payment': mortgage_payment,
+                    'interest': interest_amount,
+                    'principle': principle_amount,
+                    'loan_balance': loan_balance,
+                    'total_paid_to_interest': total_paid_to_interest,
+                    'total_paid_to_bank': total_paid_to_bank,
                     'paymentData': current_payment_date
                 })
 
-        return paymentSchedule
+        return payment_schedule
 
     def get_monthly_mortgage_payment(self):
         """
