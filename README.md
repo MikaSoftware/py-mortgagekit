@@ -21,6 +21,7 @@ Python library for mortgage calculations.
 Here is an example of using the using the library in your code.
 
   ```python
+  from mortgagekit.constants import *
   from mortgagekit.calculator import *
 
   # Define our variables.

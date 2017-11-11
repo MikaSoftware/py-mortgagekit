@@ -13,25 +13,18 @@ import math
 from dateutil.relativedelta import relativedelta
 from moneyed import Money, USD
 from moneyed.localization import format_money
+from mortgagekit.constants import *
+from mortgagekit.utils import *
 
 
 __author__ = "Bartlomiej Mika"
 __copyright__ = "Copyright (c) 2017, Mika Software Corporation"
 __credits__ = ["Bartlomiej Mika", "David Stubbs"]
 __license__ = "BSD 2-Clause License"
-__version__ = "1.0.2a1"
+__version__ = "1.0.3a1"
 __maintainer__ = "Mika Software Corporation"
 __email = "bart@mikasoftware.com"
 __status__ = "Production"
-
-
-MORTGAGEKIT_ANNUAL = Decimal(1)
-MORTGAGEKIT_SEMI_ANNUAL = Decimal(2)
-MORTGAGEKIT_QUARTER = Decimal(4)
-MORTGAGEKIT_BI_MONTH = Decimal(6)
-MORTGAGEKIT_MONTH = Decimal(12)
-MORTGAGEKIT_BI_WEEK = Decimal(26)
-MORTGAGEKIT_WEEK = Decimal(52)
 
 
 class MortgageCalculator(object):
@@ -166,22 +159,9 @@ class MortgageCalculator(object):
                 totalPaidToInterest = interestAmount + totalPaidToInterest
                 totalPaidToBank = mortgagePayment + totalPaidToBank
 
-                # Calculate the current payment date according to the year/ month/ etc
+                # Calculate the next payment date according to the year/ month/ etc
                 # that the computation is currently on.
-                if self._payment_frequency is MORTGAGEKIT_ANNUAL:
-                    current_payment_date += relativedelta(years=1)
-                elif self._payment_frequency is MORTGAGEKIT_SEMI_ANNUAL:
-                    current_payment_date += relativedelta(months=6)
-                elif self._payment_frequency is MORTGAGEKIT_QUARTER:
-                    current_payment_date += relativedelta(months=4)
-                elif self._payment_frequency is MORTGAGEKIT_BI_MONTH:
-                    current_payment_date += relativedelta(months=2)
-                elif self._payment_frequency is MORTGAGEKIT_MONTH:
-                    current_payment_date += relativedelta(months=1)
-                elif self._payment_frequency is MORTGAGEKIT_BI_WEEK:
-                    current_payment_date += relativedelta(weeks=2)
-                elif self._payment_frequency is MORTGAGEKIT_WEEK:
-                    current_payment_date += relativedelta(weeks=1)
+                current_payment_date = get_next_date_by_frequency(current_payment_date, self._payment_frequency)
 
                 # Save the computation we've generated.
                 paymentSchedule.append({
@@ -203,67 +183,17 @@ class MortgageCalculator(object):
         Function will return the amount paid per payment standardized to
         a per monthly bases.
         """
-        mortgage_payment = self.get_mortgage_payment_per_payment_frequency()
-        frequency = self._payment_frequency
-        monthly_mortgage_payment = None
-
-        if frequency == MORTGAGEKIT_ANNUAL:  # Annual
-            monthly_mortgage_payment = mortgage_payment / Decimal(MORTGAGEKIT_MONTH)
-
-        elif frequency == MORTGAGEKIT_SEMI_ANNUAL:  # Semi-annual
-            monthly_mortgage_payment = mortgage_payment / Decimal(MORTGAGEKIT_BI_MONTH)
-
-        elif frequency == MORTGAGEKIT_QUARTER:  # Quarterly
-            monthly_mortgage_payment = mortgage_payment / Decimal(MORTGAGEKIT_QUARTER)
-
-        elif frequency == MORTGAGEKIT_BI_MONTH:
-            monthly_mortgage_payment = mortgage_payment / Decimal(MORTGAGEKIT_SEMI_ANNUAL)
-
-        if frequency == MORTGAGEKIT_MONTH:
-            monthly_mortgage_payment = mortgage_payment
-
-        elif frequency == MORTGAGEKIT_BI_WEEK:
-            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_BI_WEEK) / Decimal(MORTGAGEKIT_MONTH)
-
-        elif frequency == MORTGAGEKIT_WEEK:
-            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_WEEK) / Decimal(MORTGAGEKIT_MONTH)
-
-        else:
-            raise Exception("WARNING: Unsupported payment frequency type!")
-
-        return monthly_mortgage_payment
+        return get_mortgage_payment_per_frequency_to_per_month(
+            mortgage_payment = self.get_mortgage_payment_per_payment_frequency(),
+            frequency = self._payment_frequency
+        )
 
     def get_annual_mortgage_payment(self):
         """
         Function will return the amount paid per payment standardized to
         a per annual bases.
         """
-        mortgage_payment = self.get_mortgage_payment_per_payment_frequency()
-        frequency = self._payment_frequency
-        monthly_mortgage_payment = None
-
-        if frequency == MORTGAGEKIT_ANNUAL:
-            monthly_mortgage_payment = mortgage_payment
-
-        elif frequency == MORTGAGEKIT_SEMI_ANNUAL:
-            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_SEMI_ANNUAL)
-
-        elif frequency == MORTGAGEKIT_QUARTER:
-            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_QUARTER)
-
-        elif frequency == MORTGAGEKIT_BI_MONTH:
-            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_BI_MONTH)
-
-        if frequency == MORTGAGEKIT_MONTH:
-            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_MONTH)
-
-        elif frequency == MORTGAGEKIT_BI_WEEK:
-            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_BI_WEEK)
-
-        elif frequency == MORTGAGEKIT_WEEK:
-            monthly_mortgage_payment = mortgage_payment * Decimal(MORTGAGEKIT_WEEK)
-
-        else:
-            raise Exception("WARNING: Unsupported payment frequency type!")
-
-        return monthly_mortgage_payment
+        return get_mortgage_payment_per_frequency_to_per_annual(
+            mortgage_payment = self.get_mortgage_payment_per_payment_frequency(),
+            frequency = self._payment_frequency
+        )
