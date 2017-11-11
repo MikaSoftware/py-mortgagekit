@@ -19,7 +19,7 @@ setup(
     description='Python library for mortgage calculations.',
     long_description=readme(),
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Education',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
@@ -27,7 +27,7 @@ setup(
         'Topic :: Office/Business :: Financial :: Accounting',
       ],
     keywords='mortgage amortization finance',
-    version='1.0.3a1',
+    version='1.0.3b1',
     author='Bartlomiej Mika',
     author_email='bart@mikasoftware.com',
     url='https://github.com/MikaSoftware/py-mortgagekit',
