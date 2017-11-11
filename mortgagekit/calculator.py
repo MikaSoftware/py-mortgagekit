@@ -132,7 +132,7 @@ class MortgageCalculator(object):
         bottom = bottom - 1
 
         if bottom == 0:
-            return 0
+            return Money(amount=0.00, currency=self._currency)
 
         mortgage = (top / bottom)
         mortgage = mortgage * p
